@@ -9,9 +9,21 @@ public class Edge {
 
 	public Edge(String name, Node n1, Node n2) {
 		this.name = name;
-		this.n1 = n1;
-		this.n2 = n2;
+		boolean reverse = n1.name.compareTo(n2.name) > 0;
+		this.n1 = reverse ? n2 : n1;
+		this.n2 = reverse ? n1 : n2;
 		this.hash = (n1.name + n2.name).hashCode();
+	}
+
+	public Node getTheOtherNode(Node node) {
+		boolean b1 = n1.equals(node);
+		boolean b2 = n2.equals(node);
+
+		if ((b1 && b2) || (!b1 && !b2)) {
+			return null; // error
+		}
+
+		return b1 ? n2 : n1;
 	}
 
 	@Override

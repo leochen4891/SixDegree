@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -22,14 +24,43 @@ public class SixDegree {
 		Map<String, String[]> map = six.getInputMoviesAndActorsList();
 
 		for (String movie : map.keySet()) {
-			System.out.println(movie);
+			// System.out.println(movie);
 			String[] actors = map.get(movie);
 			for (String actor : actors) {
-				System.out.print(actor + ", ");
+				// System.out.print(actor + ", ");
 			}
-			System.out.println();
-			System.out.println();
+			// System.out.println();
+			// System.out.println();
 		}
+
+		Graph graph = new Graph();
+		graph.initWithMoviesAndActorsList(map);
+
+		printConnection(graph, "Morgan Freeman", "Arnold Schwarzenegger");
+		printConnection(graph, "Morgan Freeman", "Al Pacino");
+		printConnection(graph, "Leonardo DiCaprio", "Robert Redford");
+	}
+
+	public static void printConnection(Graph graph, String actor1, String actor2) {
+		Node n1 = graph.getNode(actor1);
+		Node n2 = graph.getNode(actor2);
+
+		List<Edge> list = graph.BFS(n1.name, n2.name);
+		if (null == list || list.size() <= 0) {
+			System.out.println("No connection between " + n1.name + " and " + n2.name);
+			return;
+		}
+
+		Collections.reverse(list);
+
+		System.out.println("Connection Found between " + n1.name + " and " + n2.name);
+		Node prev = n1;
+		for (Edge e : list) {
+			Node next = e.getTheOtherNode(prev);
+			System.out.println(prev.name + "    <" + e.name + ">    " + next.name);
+			prev = next;
+		}
+		System.out.println();
 	}
 
 	private Map<String, String[]> getInputMoviesAndActorsList() {
